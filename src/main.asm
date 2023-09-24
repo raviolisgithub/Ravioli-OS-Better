@@ -1,38 +1,33 @@
-; Infinite loop
-infinite_loop:
-    jmp loop
+mov ah, 0x0e ; teletype mode
 
-mov ah, 0x0e ; Teletype mode
+mov bp, 0x8000 ; address far away (8000 - 7c00)
+mov sp, bp ; this only happens if the stack is empty
 
-; prints text
-mov al, 'R'
+; words
+push 'F'
+push 'O'
+push 'O'
+push 'D'
+
+pop bx
+mov al, bl
+int 0x10 ; prints 'D'
+
+pop bx
+mov al, bl
+int 0x10 ; prints 'D'
+
+pop bx
+mov al, bl
+int 0x10 ; prints 'D'
+
+pop bx
+mov al, bl
+int 0x10 ; prints 'D'
+
+mov al, [0x8000] ; characters that are waste will be moved to al (this is the popped char from the stack)
 int 0x10
 
-mov al, 'A'
-int 0x10
-
-mov al, 'V'
-int 0x10
-
-mov al, 'I'
-int 0x10
-
-mov al, 'O'
-int 0x10
-
-mov al, 'L'
-int 0x10
-
-mov al, 'I'
-int 0x10
-
-mov al, 'O'
-int 0x10
-
-mov al, 'S'
-int 0x10
-
-; Fills the img
+jmp $
 times 510-($-$$) db 0
-; magic number
 dw 0xaa55
