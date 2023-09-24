@@ -1,33 +1,34 @@
-mov ah, 0x0e ; teletype mode
+[org 0x7c00] ; tell the assembler that our offset is bootsector code
 
-mov bp, 0x8000 ; address far away (8000 - 7c00)
-mov sp, bp ; this only happens if the stack is empty
+; The main routine makes sure the parameters are ready and then calls the function
+mov bx, STARTUP
+call print
 
-; words
-push 'F'
-push 'O'
-push 'O'
-push 'D'
+call print_nl
 
-pop bx
-mov al, bl
-int 0x10 ; prints 'D'
+mov bx, SHUTDOWN
+call print
 
-pop bx
-mov al, bl
-int 0x10 ; prints 'D'
+call print_nl
 
-pop bx
-mov al, bl
-int 0x10 ; prints 'D'
+mov dx, 0x12fe
+call print_hex
 
-pop bx
-mov al, bl
-int 0x10 ; prints 'D'
-
-mov al, [0x8000] ; characters that are waste will be moved to al (this is the popped char from the stack)
-int 0x10
-
+; straightforwad
 jmp $
+
+; remember to include modules below the hang
+%include "src/printf.asm"
+%include "src/hexadecimal.asm"
+
+
+; variables
+STARTUP:
+    db 'Ravioli OS', 0
+
+SHUTDOWN:
+    db 'Shutting down...', 0
+
+; padding and magic number
 times 510-($-$$) db 0
 dw 0xaa55
