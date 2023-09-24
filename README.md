@@ -1,0 +1,1 @@
+This OS is not COPYRIGHTED.
